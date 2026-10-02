@@ -1,0 +1,506 @@
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:#ffffff !important;
+    color:#333;
+    overflow-x:hidden;
+}
+/* ==========================================================================
+   LEFT SLIDE SCROLL ANIMATION FOR CATEGORIES
+   ========================================================================== */
+.category-scroll-slide {
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: transform 0.45s cubic-bezier(0.25, 1, 0.2, 1), opacity 0.4s ease-in-out;
+}
+
+.category-scroll-slide.show-now {
+    opacity: 1;
+    transform: translateX(0) !important;
+}
+
+/* Card Container */
+.nexora-cat-card {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 4px; /* Nexora me sharp minimal rounded corners hain */
+    background-color: #f8f9fa;
+}
+
+.nexora-cat-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.nexora-cat-card:hover .nexora-cat-img {
+    transform: scale(1.03); /* Soft hover zoom like Nexora */
+}
+
+/* Text Overlay (Nexora Orange Title Style) */
+.nexora-overlay-title {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: #e67e22; /* Nexora Orange Title Color */
+    font-size: 22px;
+    font-weight: 700;
+    text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.8); /* Readability enhance karne ke liye */
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* --- DESKTOP / LAPTOP BREAKPOINT --- */
+@media (min-width: 768px) {
+    .main-tall-card { 
+        height: 500px; 
+    }
+    .girl-banner-card { 
+        height: 200px; 
+    }
+    .bottom-sub-card { 
+        height: 284px; 
+    }
+}
+
+/* --- MOBILE RESPONSIVE (1 BY 1 STACK) --- */
+@media (max-width: 767px) {
+    .main-tall-card,
+    .girl-banner-card,
+    .bottom-sub-card {
+        height: 260px !important; 
+    }
+    .nexora-overlay-title {
+        font-size: 18px;
+        bottom: 15px;
+        left: 15px;
+    }
+}
+/* --- 2. RUNTIME SCROLL TRIGGER CONFIGURATION (JAVASCRIPT DEPENDENT) --- */
+/* Shuru me cards hidden aur left side par pushed rahenge */
+.slide-from-left {
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Jab JavaScript scroll detect karke ye class lagayega tab smoothly cards samne aayenge */
+.slide-from-left.animate {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* --- 3. PREMIUM HOVER IMAGE SWAP MECHANISM --- */
+.product-img-wrapper {
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.product-img-wrapper img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    position: absolute;
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+}
+
+/* Image states initial configuration */
+.img-secondary { 
+    opacity: 0 !important; 
+    z-index: 1; 
+}
+.img-primary { 
+    opacity: 1 !important; 
+    z-index: 2; 
+}
+
+/* Hover state image flip toggle */
+.product-card:hover .img-primary { 
+    opacity: 0 !important; 
+}
+.product-card:hover .img-secondary { 
+    opacity: 1 !important; 
+    z-index: 2; 
+    transform: scale(1.02); /* Chota sa premium zoom effect */
+}
+
+/* --- 4. PRODUCT CARD BASIC STRUCTURE --- */
+.product-card {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    background: #ffffff;
+    border-radius: 0px !important; /* Square premium aesthetic */
+}
+
+.product-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+}
+
+/* --- 5. DYNAMIC HOVER STATE: PRICE HIDE & CART LINK SHOW --- */
+
+/* Action Box Wrapper */
+.card-action-container {
+    position: relative;
+    min-height: 45px; /* Height reserve rakhi hai taaki layout hile nahi */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: inherit; /* Card body ka text alignment follow karega */
+}
+
+/* Shuru me prices normal dikhengi aur transition dynamic hoga */
+.price-block {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    width: 100%;
+}
+
+/* Shuru me button frame ke niche chhupa rahega aur hidden hoga.
+   Ab ye ek plain, professional TEXT LINK hai — koi filled background nahi,
+   sirf ek subtle top divider aur icon+label. */
+.hover-cart-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px); /* Chota, subtle rise — filled button jaisa bada slide nahi */
+    transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.3s;
+
+    background: transparent !important;
+    border: none;
+
+    color: #0d47a1 !important;
+    font-weight: 600;
+    padding: 10px 0 2px;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    z-index: 5;
+    text-decoration: none !important;
+}
+
+.hover-cart-btn i {
+    font-size: 0.85rem;
+}
+
+.hover-cart-btn:hover {
+    color: #08357e !important;
+    letter-spacing: 1px; /* Subtle letter-spacing widen on hover — a quiet link-style cue */
+}
+
+/* Amazon variant — shown instead of Add to Cart when a product has an amazon_link set */
+.hover-cart-btn.amazon-btn {
+    color: #E47911 !important; /* Amazon's signature orange */
+}
+.hover-cart-btn.amazon-btn:hover {
+    color: #B4590A !important;
+}
+
+/* --- HOVER ACTIONS TRIGGERED BY MOUSE --- */
+
+/* 1. Mouse aate hi prices ko smoothly gayab karo */
+.product-card:hover .price-block {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(-20px); /* Upar ki taraf fade out */
+}
+
+/* 2. Mouse aate hi Add to Cart link niche se smoothly upar slide hoga */
+.product-card:hover .hover-cart-btn {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0); /* Apni sahi position par aa jayega */
+}
+
+/* --- 6. POPULAR SECTION CUSTOM ACTION LINKS --- */
+.action-link {
+    font-size: 0.85rem;
+    color: #555555;
+    transition: color 0.2s ease-in-out;
+}
+
+.action-link:hover {
+    color: #0d47a1 !important;
+}
+
+/* --- 8. WISHLIST HEART BUTTON --- */
+.wishlist-btn{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 4;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,.92);
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: transform .2s ease, color .15s ease, background .15s ease, opacity .2s ease;
+}
+/* Only reveal on hover — like the reference site — unless it's
+   already saved, in which case keep it visible so the state is clear. */
+.product-card:hover .wishlist-btn,
+.wishlist-btn.active{
+    opacity: 1;
+    transform: translateY(0);
+}
+.wishlist-btn:hover{
+    transform: scale(1.08) translateY(0);
+    background: #fff;
+}
+.wishlist-btn.active{
+    color: #e63950;
+}
+.wishlist-btn i{
+    pointer-events: none;
+}
+.wishlist-btn:disabled{
+    opacity: .6;
+    cursor: default;
+}
+
+/* Touch devices (no real hover) — keep the heart reachable */
+@media (hover: none){
+    .wishlist-btn{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- 7. LIFESTYLE / BEST SELLER PHOTO GRID DISPLAY --- */
+/* --- LIFESTYLE IMAGES POSITION & HOVER SLIDE EFFECT --- */
+.lifestyle-img {
+    transform: scale(1) translateX(0);
+    filter: brightness(100%);
+}
+
+/* Jab mouse kisi photo par jayega toh wo halki si right-to-left slide hogi aur zoom hogi */
+#lifestyle-section .col-lg:hover .lifestyle-img,
+#lifestyle-section .col-6:hover .lifestyle-img {
+    transform: scale(1.08) translateX(-5px);
+    filter: brightness(90%); /* Premium look ke liye halka dark shadow effect */
+    z-index: 2;
+}
+/* Container Lock */
+.style-premium-hero {
+    height: 100vh !important; /* Managed height to prevent overflowing */
+    width: 100%;
+    position: relative;
+    overflow: hidden !important;
+    background: transparent !important; /* Forcing black blocks out */
+}
+
+.style-premium-hero .carousel-inner,
+.style-premium-hero .carousel-item {
+    height: 100% !important;
+    background: transparent !important;
+}
+
+/* Background Setup */
+.hero-bg-stretched-layer {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center 40%;
+    background-size: cover;
+}
+
+/* Ambient Overlay */
+.premium-tint-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(80, 35, 120, 0.4) 0%, rgba(30, 15, 60, 0.7) 100%);
+    z-index: 2;
+}
+
+/* FIXED TEXT SYSTEM */
+.fixed-hero-content-master {
+    position: absolute;
+    top: 50% !important;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    color: #ffffff;
+    z-index: 30;
+}
+
+/* Typography Rules */
+.hero-sub-badge{
+    text-transform: uppercase;
+    font-size: 0.80rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;   /* Har letter ka gap */
+    word-spacing: -2px !important;    /* Har word ka gap kam */
+    color: rgba(255, 255, 255, 0.9) !important;
+
+    display: block;
+    position: relative;
+    top: -20px;
+    margin-bottom: 15px;
+}
+
+.hero-main-title {
+    font-size: 3rem !important;
+    font-weight: 600 !important;   /* 650/620 ki jagah */
+    line-height: 1.09 !important;
+    letter-spacing: -0.5px;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.hero-orange-tag {
+    font-size: 1.3rem !important;
+    color: #ffb74d !important;
+    font-weight: 600 !important;
+    margin-top: 20px !important;
+   
+}
+
+/* CTA Pill Button */
+.premium-hero-action-btn{
+    display:inline-block;
+    background:#0b419c;
+    color:#fff;
+
+    font-size:14px;
+    font-weight:700;
+
+    padding:12px 35px;
+     margin-top: 30px !important; 
+    border:none;
+    border-radius:50px;
+
+    text-decoration:none !important;   /* Underline khatam */
+    padding: 10px 25px;          /* Blue outline khatam */
+    box-shadow:none !important;        /* Shadow khatam */
+
+    cursor:pointer;
+}
+.premium-hero-action-btn:hover,
+.premium-hero-action-btn:focus,
+.premium-hero-action-btn:active,
+.premium-hero-action-btn:visited{
+
+    color:#fff;
+    text-decoration:none !important;
+    outline:none !important;
+    box-shadow:none !important;
+}
+
+/* ================= PREMIUM MULTI LAYER WAVE ================= */
+
+/*================ PREMIUM LAYERED WAVES ================*/
+
+/*=============================
+ PREMIUM HERO WAVE
+=============================*/
+
+.wave-container-master-deep{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:190px;
+    overflow:hidden;
+    z-index:25;
+    pointer-events:none;
+}
+
+.wave-svg-layer{
+    position:absolute;
+    left:0;
+    width:100%;
+    height:100%;
+}
+
+/* Layer 1 */
+.layer-1{
+    bottom:55px;
+    opacity:.18;
+}
+
+/* Layer 2 */
+.layer-2{
+    bottom:35px;
+    opacity:.35;
+}
+
+/* Layer 3 */
+.layer-3{
+    bottom:18px;
+    opacity:.60;
+}
+
+/* Front */
+.layer-4{
+    bottom:0;
+}
+
+/* Middle Wave */
+.middle-layer{
+    opacity:.6;
+    bottom:8px;
+    animation-duration:14s;
+}
+
+/* Front Wave */
+.front-layer{
+    opacity:1;
+    bottom:0;
+    animation-duration:10s;
+}
+
+@keyframes waveMove{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(-50%);
+    }
+}
+
+.fixed-hero-content-master{
+    animation: heroDrop 1.3s ease-out forwards;
+}
+
+@keyframes heroDrop{
+
+    0%{
+        opacity:0;
+        transform:translate(-50%, -320px);
+    }
+
+    100%{
+        opacity:1;
+        transform:translate(-50%, -50%);
+    }
+
+}
