@@ -9,6 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 include 'config/db.php';
 
 $category = $_GET['category'] ?? 'all';
+$search   = trim($_GET['search'] ?? '');
 
 if (!in_array($category, ['all', 'new', 'popular'], true)) {
     $category = 'all';
@@ -196,6 +197,35 @@ function render_shop_product_card(array $product): void
 
     <div class="container">
 
+        <?php if ($search !== ''): ?>
+        <section id="search-results" class="product-section">
+            <div class="product-section-title">
+                <h2>Results for “<?= htmlspecialchars($search) ?>”</h2>
+                <a href="shop-now.php" class="product-count text-decoration-none">Clear search ✕</a>
+            </div>
+
+            <div class="row row-cols-2 row-cols-lg-4 g-4">
+                <?php
+                if (isset($conn) && !$conn->connect_error) {
+                    $like = '%' . $search . '%';
+                    $stmt = $conn->prepare("SELECT * FROM products WHERE name LIKE ? OR description LIKE ? ORDER BY id DESC");
+                    $stmt->bind_param("ss", $like, $like);
+                    $stmt->execute();
+                    $search_result = $stmt->get_result();
+                    if ($search_result && $search_result->num_rows > 0) {
+                        while ($product = $search_result->fetch_assoc()) {
+                            render_shop_product_card($product);
+                        }
+                    } else {
+                        echo '<div class="col-12 text-center py-5"><p class="text-muted">No products matched your search.</p></div>';
+                    }
+                    $stmt->close();
+                }
+                ?>
+            </div>
+        </section>
+        <?php else: ?>
+
         <div class="shop-tabs">
             <a href="shop-now.php?category=all" class="shop-tab <?= $category === 'all' ? 'active' : '' ?>">All Products</a>
             <a href="shop-now.php?category=new" class="shop-tab <?= $category === 'new' ? 'active' : '' ?>">New Arrivals</a>
@@ -273,6 +303,8 @@ function render_shop_product_card(array $product): void
             </div>
         </section>
         <?php endif; ?>
+
+        <?php endif; /* end search / tabs switch */ ?>
 
     </div>
 
